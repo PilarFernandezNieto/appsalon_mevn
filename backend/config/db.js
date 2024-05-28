@@ -10,7 +10,7 @@ export const db = async () => {
         
     } catch (error) {
         console.log(`Error: ${error.message}`);
-        process.exit(1)
+        process.exit(1) // 1 para el proceso e indica que hubo un error
     }
 
     

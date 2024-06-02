@@ -11,6 +11,11 @@ const formatter = ref({
     date: "DD/MM/YYYY",
     month: "MMMM"
 })
+const disabledDate = (date) => {
+    const today = new Date();
+
+    return date < today || date.getMonth() > today.getMonth() + 1 || [0, 6].includes(date.getDay())
+}
 
 </script>
 
@@ -33,10 +38,12 @@ const formatter = ref({
 
         <div class="lg:flex gap-5 items-start">
             <div class="w-full lg:w-96 bg-white flex justify-center rounded-lg">
+
                 <VueTailwindDatepicker v-model="appointments.dateValue" 
+                    :disable-date="disabledDate"
                     :formatter="formatter" 
                     i18n="es" 
-                    as-single 
+                    as-single
                     no-input />
                 
             </div>
@@ -50,7 +57,9 @@ const formatter = ref({
 
         </div>
         <div class="flex justify-end">
-            <button class="w-full md:w-auto bg-blue-500 rounded-lg p-3 uppercase font-black text-white">Confirmar Reserva</button>
+            <button v-if="appointments.isValidReservation" 
+            class="w-full md:w-auto bg-blue-500 rounded-lg p-3 uppercase font-black text-white"
+            @click="appointments.createAppointment()">Confirmar Reserva</button>
         </div>
     </div>
 

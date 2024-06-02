@@ -31,6 +31,16 @@ export const useAppointmentsStore = defineStore("appointments", () => {
    
   }
 
+  const createAppointment = ()=> {
+    const appointment = {
+      services: services.value.map(service => service._id),
+      date: dateValue.value,
+      time: time.value,
+      totalAmount: totalAmount.value
+    }
+    console.log(appointment);
+    
+  }
 
   const isServiceSelected = computed(() => {
     return id => services.value.some(service => service._id === id);
@@ -39,6 +49,10 @@ export const useAppointmentsStore = defineStore("appointments", () => {
 
   const totalAmount = computed(() => {
     return services.value.reduce((total, service) => total + service.price, 0);
+  })
+
+  const isValidReservation = computed (() => {
+    return services.value.length && dateValue.value.length && time.value.length
   })
 
 
@@ -50,6 +64,8 @@ export const useAppointmentsStore = defineStore("appointments", () => {
     onServiceSelected,
     isServiceSelected,
     noServicesSelected,
-    totalAmount
+    totalAmount,
+    isValidReservation,
+    createAppointment
   };
 });

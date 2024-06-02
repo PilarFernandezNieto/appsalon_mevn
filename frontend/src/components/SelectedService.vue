@@ -19,8 +19,6 @@ defineProps({
         </div>
         <button type="button" 
         class="inline-flex items-cente rounded-md bg-red-600 text-white text-sm px-3 py-2 font-semibold shadow-sm ring-1 ring-inset ring-red-300 hover:bg-red-700"
-        @click="appointments.onServiceSelected(service)">
-        Eliminar
-        </button>
+        @click="appointments.onServiceSelected(service)">Eliminar</button>
     </div>
 </template>

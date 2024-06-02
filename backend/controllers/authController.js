@@ -1,7 +1,8 @@
+import { sendEmailVerification } from "../emails/authEmailService.js";
 import User from "../models/User.js";
 
-const register = async (request, response) => {
 
+const register = async (request, response) => {
     
 // Valida todos los campos
   if (Object.values(request.body).includes("")) {
@@ -30,13 +31,15 @@ const register = async (request, response) => {
   }
 
   // Hashear password
-  
+
 
 
   try {
 
     const user = new User(request.body);
-    await user.save();
+    const result = await user.save();
+    sendEmailVerification();
+
     response.json({
       msg: "El usuario se creó correctamente. Revisa tu email"
     });
@@ -47,5 +50,6 @@ const register = async (request, response) => {
 
   }
 };
+/** fin register */
 
 export default register;

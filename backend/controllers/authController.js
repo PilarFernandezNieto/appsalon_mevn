@@ -32,13 +32,14 @@ const register = async (request, response) => {
 
   // Hashear password
 
-
-
   try {
 
     const user = new User(request.body);
     const result = await user.save();
-    sendEmailVerification();
+
+    const {name, email, token} = result;
+   
+    sendEmailVerification({name, email, token });
 
     response.json({
       msg: "El usuario se creó correctamente. Revisa tu email"
@@ -50,6 +51,65 @@ const register = async (request, response) => {
 
   }
 };
-/** fin register */
 
-export default register;
+const verifyAccount = async(request, response) =>{
+  const {token} = request.params
+  const user = await User.findOne({token})
+  if(!user){
+    const error = new Error("Hubo un error, token no válido");
+    return response.status(401).json({
+      msg: error.message
+    })
+  }
+
+  try {
+    user.verified = true
+    user.token = ""
+    await user.save()
+    response.json({
+      msg: "Usuario confirmado correctamente"
+    })
+    
+  } catch (error) {
+    console.log(error);
+  }
+  
+}
+
+const login = async (request, response) => {
+  const {email, password} = request.body
+  
+  // Revisar que el usuario existe
+  const user = await User.findOne({email})
+  if(!user){
+    const error = new Error("El usuario no existe")
+    return response.status(401).json({
+      msg: error.message
+    })
+  }
+  if(!user.verified){
+    const error = new Error("Tu cuenta todavía no ha sido confirmada")
+    return response.status(401).json({
+      msg: error.message
+    })
+  }
+  if(await user.checkPassword(password)){
+    response.json({
+      msg: "Usuario autenticado"
+    })
+
+  } else {
+    const error = new Error("El password es incorrecto")
+    return response.status(401).json({
+      msg: error.message
+    })
+
+  }
+  
+}
+
+export {
+  register,
+  verifyAccount,
+  login
+}

@@ -10,20 +10,18 @@ import App from './App.vue'
 import router from './router'
 import "vue-toast-notification/dist/theme-sugar.css"
 
-const toast = useToast({
+const $toast = useToast({
     duration: 5000,
-    position: "top-right"
-})
+    position: 'top-right'
+});
 
-toast.open({
-    message:"Probando toast",
-    type:"success"
-})
 
 const app = createApp(App)
 
+app.provide("toast", $toast)
+
 app.use(createPinia())
-app.use(plugin, defaultConfig(config))
+app.use(plugin, defaultConfig(config)) // FormKit
 app.use(router)
 
 app.mount('#app')

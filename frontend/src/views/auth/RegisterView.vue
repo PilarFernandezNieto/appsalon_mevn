@@ -1,10 +1,9 @@
 <script setup>
 import { inject } from 'vue';
+import { reset } from '@formkit/vue';
 import AuthApi from '@/api/AuthApi';
 
 const toast = inject("toast")
-
-
 
 const hadleSubmit = async ({ password_confirm, ...formData }) => {
     try {
@@ -13,9 +12,14 @@ const hadleSubmit = async ({ password_confirm, ...formData }) => {
             message: data.msg,
             type: "success"
         })
+        reset("registerForm")
        
     } catch (error) {
-        console.log(error);
+
+        toast.open({
+            message: error.response.data.msg,
+            type: "error"
+        })
     }
 
 }
@@ -26,7 +30,7 @@ const hadleSubmit = async ({ password_confirm, ...formData }) => {
     <h1 class="text-6xl font-extrabold text-white text-center mt-10">Crea una cuenta</h1>
     <p class="text-2xl text-white text-center my-10">Crea una cuenta en AppSalón</p>
 
-    <FormKit type="form" :actions="false" incomplete-message="No se pudo enviar, revista las notificaciones"
+    <FormKit id="registerForm" type="form" :actions="false" incomplete-message="No se pudo enviar, revista las notificaciones"
         @submit="hadleSubmit">
         <FormKit type="text" label="Nombre" name="name" placeholder="Tu Nombre" validation="required|length:3"
             :validation-messages="{

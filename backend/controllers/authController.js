@@ -54,7 +54,11 @@ const register = async (request, response) => {
 
 const verifyAccount = async(request, response) =>{
   const {token} = request.params
+
+
   const user = await User.findOne({token})
+  console.log('User', user);
+  
   if(!user){
     const error = new Error("Hubo un error, token no válido");
     return response.status(401).json({

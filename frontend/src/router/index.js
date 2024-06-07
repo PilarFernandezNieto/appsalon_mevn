@@ -13,6 +13,7 @@ const router = createRouter({
       path: "/reservas",
       name: "appointments",
       component: AppointmentsLayout,
+      meta: {requiresAuth: true},
       children: [
         {
           path: "",
@@ -37,6 +38,8 @@ const router = createRouter({
         }
       ]
     },
+
+
     {
       path: "/auth",
       name: "auth",
@@ -63,4 +66,19 @@ const router = createRouter({
   ]
 })
 
+router.beforeEach(async (to, from, next) => {
+  const requiresAuth = to.matched.some((url) => url.meta.requiresAuth)
+  
+  if(requiresAuth){
+    try {
+      
+    } catch (error) {
+      
+    }
+  }else {
+    next()
+  }
+  
+  
+})
 export default router

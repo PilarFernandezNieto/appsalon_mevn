@@ -14,7 +14,7 @@
 
             </div>
             <nav class="flex gap-2 items-center justify-end">
-                <button class="p-3 text-gray-200 uppercase text-xs font-bold rounded-lg">Mis citas</button>
+                <RouterLink :to="{name: 'my-appointments'}" class="p-3 text-gray-200 uppercase text-xs font-bold rounded-lg">Mis citas</RouterLink>
                 <RouterLink :to="{name: 'new-appointment'}" class="p-3 text-gray-200 uppercase text-xs font-bold rounded-lg bg-blue-700">
                     Nueva Cita
                 </RouterLink>

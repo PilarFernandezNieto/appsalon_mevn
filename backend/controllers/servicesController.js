@@ -6,6 +6,7 @@ import { validateObjectId, handleNotFoundError } from "../utils/index.js";
 const createService = async (request, response) => {
     
     // Validación
+    console.log(Object.keys(request.body))
     if(Object.values(request.body).includes("")){
         const error = new Error("Todos los campos son obligatorios")
 

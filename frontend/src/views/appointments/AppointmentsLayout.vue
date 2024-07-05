@@ -19,7 +19,7 @@
 
     </div>
     <main>
-        <div class="space-y-5">
+        <div>
             <RouterView />
         </div>
     </main>

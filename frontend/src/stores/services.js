@@ -3,18 +3,18 @@ import { defineStore } from "pinia";
 import ServicesApi from "@/api/ServicesApi";
 
 export const useServicesStore = defineStore("services", () => {
-  const services = ref([]);
 
+  const services = ref([]);
   onMounted(async () => {
     try {
       const { data } = await ServicesApi.all();
-      services.value = data;
+      services.value = data
     } catch (error) {
       console.log(error);
     }
   });
 
   return {
-    services,
+    services
   };
 });

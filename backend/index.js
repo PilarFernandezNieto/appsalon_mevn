@@ -19,18 +19,19 @@ app.use(express.json())
 db();
 
 // Configurar CORS
-
 const whiteList = [process.env.FRONTEND_URL]
 
+
+// Coloca en la lista de dominios permitidos la url de postman, que en este caso es undefined
 if(process.argv[2] == '--postman'){
   whiteList.push(undefined)
-}
+ }
 
 const corsOptions = {
   origin: function(origin, callback){
-
-    if(whiteList.includes(origin)){
+     if(whiteList.includes(origin)){
       // Permite la conexión
+      // Parámetros: Mensaje de error - boolean para dar acceso
       callback(null, true)
     } else {
       // No permite la conexión

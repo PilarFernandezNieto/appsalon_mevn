@@ -19,7 +19,9 @@
 
     </div>
     <main>
-        <RouterView />
+        <div class="space-y-5">
+            <RouterView />
+        </div>
     </main>
 </template>
 

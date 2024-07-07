@@ -11,6 +11,11 @@ const formatter = ref({
 });
 const appointments = useAppointmentsStore();
 
+const disabledDate = (date) => {
+    const today = new Date();
+    return date < today || date.getMonth() > today.getMonth() + 1 || [0, 6].includes(date.getDay())
+}
+
 
 </script>
 
@@ -31,19 +36,32 @@ const appointments = useAppointmentsStore();
 
       <div class="space-y-8" v-if="!appointments.noServicesSelected">
          <h3 class="text-3xl font-extrabold text-white">Fecha y Hora</h3>
+
          <div class="lg:flex gap-5 items-start">
-            <div class="w-full lg:w-80 bg-white flex justify-center rounded-lg">
+            <div class="w-full lg:w-96 bg-white flex justify-center rounded-lg">
                <VueTailwindDatePicker v-model="appointments.dateValue"  
+                  :disable-date="disabledDate"
                   i18n="es"
                   as-single
                   no-input
                   :formatter="formatter"
                />
             </div>
-            <div class="flex-1 grid grid-cols-1 xl:grid-cols-2 gap-5 mt-10 lg:mt-0 ms-7">
-               <button type="button" v-for="hour in appointments.hours" class="block text-blue-500 rounded-lg text-xl font-black p-3 bg-white">{{ hour }}</button>
+            <div class="flex-1 grid grid-cols-1 xl:grid-cols-2 gap-5 mt-10 lg:mt-0 ">
+               <button type="button" 
+                  v-for="hour in appointments.hours" 
+                  class="block text-blue-500 rounded-lg text-xl font-black p-3 "
+                  :class="appointments.time === hour ? 'bg-blue-500 text-white' : 'bg-white' "
+                  @click="appointments.time = hour"
+               >{{ hour }}</button>
 
             </div>
+         </div>
+         <div v-if="appointments.isValidReservation" class="flex justify-end">
+            <button 
+               class="w-full md:w-auto bg-blue-500 p-3 rounded-lg uppercase font-black text-white"
+               @click="appointments.createAppointment"
+               >Confirmar reserva</button>
          </div>
       </div>
 

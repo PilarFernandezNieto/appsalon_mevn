@@ -10,6 +10,7 @@ import App from './App.vue'
 import router from './router'
 import "vue-toast-notification/dist/theme-sugar.css"
 
+// Configuración de las notificaciones
 const $toast = useToast({
     duration: 5000,
     position: 'top-right'
@@ -18,6 +19,8 @@ const $toast = useToast({
 
 const app = createApp(App)
 
+// Se podría crear un store para tener la configuración de forma global
+// En cambio, usamos provide - inject (para practicar)
 app.provide("toast", $toast)
 
 app.use(createPinia())

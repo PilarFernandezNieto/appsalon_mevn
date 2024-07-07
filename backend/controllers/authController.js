@@ -58,51 +58,45 @@ const verifyAccount = async (request, response) => {
   }
   // Si el token es válido, confirmamos la cuenta
   try {
-    user.verified = true
-    user.token = ""
-    await user.save()
-    response.json({msg: "Usuario confirmado correctamente"})
-
+    user.verified = true;
+    user.token = "";
+    await user.save();
+    response.json({ msg: "Usuario confirmado correctamente" });
   } catch (error) {
     console.log(error);
   }
 };
 
 const login = async (request, response) => {
- // Revisar que el usuario exista
+  // Revisar que el usuario exista
 
- const { email, password } = request.body
- const user = await User.findOne({email})
+  const { email, password } = request.body;
+  const user = await User.findOne({ email });
 
- if (!user) {
-  const error = new Error("El usuario no existe");
-  response.status(401).json({
-    msg: error.message
-  });
-}
+  if (!user) {
+    const error = new Error("El usuario no existe");
+    response.status(401).json({
+      msg: error.message
+    });
+  }
 
- // Revisar que si el usuario confirmó su cuenta
- if(!user.verified){
-  const error = new Error("Tu cuenta no ha sido confirmada aún");
-  response.status(401).json({
-    msg: error.message
-  });
- }
+  // Revisar que si el usuario confirmó su cuenta
+  if (!user.verified) {
+    const error = new Error("Tu cuenta no ha sido confirmada aún");
+    response.status(401).json({ msg: error.message });
+  }
 
- // Comprobar el password
- if(await user.checkPassword(password)){
-response.json({
-  msg: "Usuario autenticado"
-})
-
- } else {
-  const error = new Error("El password es incorrecto");
-  response.status(401).json({
-    msg: error.message
-  });
- }
-
-  
-}
+  // Comprobar el password
+  if (await user.checkPassword(password)) {
+    response.json({
+      msg: "Usuario autenticado"
+    });
+  } else {
+    const error = new Error("El password es incorrecto");
+    response.status(401).json({
+      msg: error.message
+    });
+  }
+};
 
 export { register, verifyAccount, login };

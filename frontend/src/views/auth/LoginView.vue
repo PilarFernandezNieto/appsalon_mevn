@@ -1,7 +1,23 @@
 <script setup>
+import { inject } from 'vue';
+import AuthApi from '@/api/AuthApi';
 
-const hadleSubmit = (data) => {
-   console.log(data);
+const toast = inject("toast")
+
+const hadleSubmit = async (formData) => {
+   try {
+      const { data } = await AuthApi.login(formData)
+       
+       toast.open({
+           message: data.msg,
+           type: "success"
+       })
+   } catch (error) {
+      toast.open({
+      message: error.response.data.msg,
+      type: "error"
+     })
+   }
 }
 
 </script>

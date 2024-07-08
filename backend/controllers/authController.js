@@ -89,10 +89,10 @@ const login = async (request, response) => {
 
   // Comprobar el password
   if (await user.checkPassword(password)) {
-    const token = generateJWT(user._id)
+    const token = generateJWT(user._id);
 
     response.json({
-     token
+      token
     });
   } else {
     const error = new Error("El password es incorrecto");
@@ -103,11 +103,10 @@ const login = async (request, response) => {
 };
 
 const user = async (request, response) => {
-  const {user} = request
- response.json({
-  user
- })
-  
-}
+  const { user } = request;
+  response.json({
+    user
+  });
+};
 
 export { register, verifyAccount, login, user };

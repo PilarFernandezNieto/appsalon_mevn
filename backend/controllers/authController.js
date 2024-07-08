@@ -103,7 +103,8 @@ const login = async (request, response) => {
 };
 
 const user = async (request, response) => {
-  const { user } = request;
+  const { user } = request
+
   response.json({
     user
   });

@@ -1,18 +1,24 @@
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted, inject } from "vue";
 import { defineStore } from "pinia";
+import { useRouter } from "vue-router";
+import AppointmentApi from "@/api/AppointmentApi";
+import { convertToISO } from "@/helpers/date";
 
 export const useAppointmentsStore = defineStore("appointments", () => {
   const services = ref([]);
   const dateValue = ref("");
   const hours = ref([]);
-  const time = ref("")
+  const time = ref("");
+
+  const toast = inject("toast");
+  const router = useRouter();
 
   // Genera el horario
   onMounted(() => {
     const startHour = 10;
     const endHour = 19;
     for (let hour = startHour; hour <= endHour; hour++) {
-     hours.value.push(hour + ":00")
+      hours.value.push(hour + ":00");
     }
   });
 
@@ -27,15 +33,31 @@ export const useAppointmentsStore = defineStore("appointments", () => {
       services.value.push(service);
     }
   }
-  function createAppointment(){
+  async function createAppointment() {
     const appointment = {
       services: services.value.map(service => service._id),
-      date: dateValue.value,
+      date: convertToISO(dateValue.value),
       time: time.value,
       totalAmount: totalAmount.value
+    };
+
+    try {
+      const { data } = await AppointmentApi.create(appointment);
+      toast.open({
+        message: data.msg,
+        type: "success"
+      });
+      clearAppointmentData()
+      router.push({name: "my-appointments"})
+    } catch (error) {
+      console.log(error);
     }
-    console.log(appointment);
-    
+  
+  }
+  function clearAppointmentData(){
+    services.value = []
+    dateValue.value = ""
+    time.value = ""
   }
 
   const isServiceSelected = computed(() => {
@@ -49,8 +71,8 @@ export const useAppointmentsStore = defineStore("appointments", () => {
   });
 
   const isValidReservation = computed(() => {
-    return services.value.length && dateValue.value.length && time.value.length
-  })
+    return services.value.length && dateValue.value.length && time.value.length;
+  });
 
   return {
     services,

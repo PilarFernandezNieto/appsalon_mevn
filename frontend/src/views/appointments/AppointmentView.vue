@@ -6,8 +6,7 @@ import { formatCurrency } from '@/helpers';
 import { useAppointmentsStore } from '@/stores/appointments';
 
 const formatter = ref({
-  date: "DD MMM YYYY",
-  month: "MMM",
+  date:"DD/MM/YYYY"
 });
 const appointments = useAppointmentsStore();
 

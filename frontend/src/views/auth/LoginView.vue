@@ -1,17 +1,18 @@
 <script setup>
 import { inject } from 'vue';
 import AuthApi from '@/api/AuthApi';
+import { useRouter } from 'vue-router';
 
 const toast = inject("toast")
+const router = useRouter()
 
 const hadleSubmit = async (formData) => {
    try {
-      const { data } = await AuthApi.login(formData)
-       
-       toast.open({
-           message: data.msg,
-           type: "success"
-       })
+
+      const { data: {token} } = await AuthApi.login(formData) // Recibe el jwt
+      localStorage.setItem("AUTH_TOKEN", token)
+      router.push({name: "my-appointments"})
+
    } catch (error) {
       toast.open({
       message: error.response.data.msg,

@@ -102,4 +102,12 @@ const login = async (request, response) => {
   }
 };
 
-export { register, verifyAccount, login };
+const user = async (request, response) => {
+  const {user} = request
+ response.json({
+  user
+ })
+  
+}
+
+export { register, verifyAccount, login, user };

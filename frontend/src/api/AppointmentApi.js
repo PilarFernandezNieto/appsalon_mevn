@@ -2,11 +2,10 @@ import api from "@/lib/axios";
 
 export default {
     create(data){
-        const token = localStorage.getItem("AUTH_TOKEN")
-        return api.post("/appointments", data, {
-            headers: {
-                Authorization: `Bearer ${token}`
-              }
-        })
+      
+        return api.post("/appointments", data)
+    },
+    getByDate(date){
+        return api.get(`/appointments?date=${date}`)
     }
 }

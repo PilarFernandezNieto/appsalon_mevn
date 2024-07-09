@@ -8,7 +8,8 @@ const authMiddleware = async (request, response, next) => {
       const token = request.headers.authorization.split(" ")[1];
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-      // Consultamos la base de datos con la información recibida
+      // Consultamos la base de datos con la información recibida y eliminamos de la consulta
+      // campos que no necesitamos
       request.user = await User.findById(decoded.id).select("-password -verified -token -__v");
 
       next();

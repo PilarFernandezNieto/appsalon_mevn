@@ -1,4 +1,4 @@
-import { ref, computed, onMounted, inject } from "vue";
+import { ref, computed, onMounted, inject, watch } from "vue";
 import { defineStore } from "pinia";
 import { useRouter } from "vue-router";
 import AppointmentApi from "@/api/AppointmentApi";
@@ -9,6 +9,7 @@ export const useAppointmentsStore = defineStore("appointments", () => {
   const dateValue = ref("");
   const hours = ref([]);
   const time = ref("");
+  const appointmentsByDate = ref([]);
 
   const toast = inject("toast");
   const router = useRouter();
@@ -20,6 +21,14 @@ export const useAppointmentsStore = defineStore("appointments", () => {
     for (let hour = startHour; hour <= endHour; hour++) {
       hours.value.push(hour + ":00");
     }
+  });
+
+  watch(dateValue, async () => {
+    time.value = "";
+    if (dateValue.value === "") return;
+    // Obtenemos las citas
+    const { data } = await AppointmentApi.getByDate(dateValue.value);
+    appointmentsByDate.value = data;
   });
 
   function onServiceSelected(service) {
@@ -47,17 +56,16 @@ export const useAppointmentsStore = defineStore("appointments", () => {
         message: data.msg,
         type: "success"
       });
-      clearAppointmentData()
-      router.push({name: "my-appointments"})
+      clearAppointmentData();
+      router.push({ name: "my-appointments" });
     } catch (error) {
       console.log(error);
     }
-  
   }
-  function clearAppointmentData(){
-    services.value = []
-    dateValue.value = ""
-    time.value = ""
+  function clearAppointmentData() {
+    services.value = [];
+    dateValue.value = "";
+    time.value = "";
   }
 
   const isServiceSelected = computed(() => {
@@ -74,16 +82,28 @@ export const useAppointmentsStore = defineStore("appointments", () => {
     return services.value.length && dateValue.value.length && time.value.length;
   });
 
+  const isDateSelected = computed(() => {
+    return dateValue.value ? true : false;
+  });
+  const disabledTime = computed(() => {
+    return hour => {
+      return appointmentsByDate.value.find(appointment => appointment.time === hour);
+    };
+  });
+
   return {
     services,
     dateValue,
     hours,
     time,
+    appointmentsByDate,
     onServiceSelected,
     createAppointment,
     isServiceSelected,
     noServicesSelected,
     totalAmount,
-    isValidReservation
+    isValidReservation,
+    isDateSelected,
+    disabledTime
   };
 });

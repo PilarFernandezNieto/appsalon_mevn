@@ -11,7 +11,7 @@ export const useUserStore = defineStore("user", () => {
     try {
       const { data }  = await AuthApi.auth();
         user.value = data.user
-        console.log(user.value);
+
     } catch (error) {
       console.log(error);
     }

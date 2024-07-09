@@ -2,6 +2,7 @@ import { ref, onMounted, computed } from "vue";
 import { defineStore } from "pinia";
 import { useRouter } from "vue-router";
 import AuthApi from "@/api/AuthApi";
+import AppointmentApi from "@/api/AppointmentApi.js";
 
 export const useUserStore = defineStore("user", () => {
     const router = useRouter()
@@ -11,11 +12,17 @@ export const useUserStore = defineStore("user", () => {
     try {
       const { data }  = await AuthApi.auth();
         user.value = data.user
-
+      
+      await getUserAppointments()
     } catch (error) {
       console.log(error);
     }
   });
+
+  async function getUserAppointments(){
+    const { data } = await AppointmentApi.getUserAppointments(user.value._id)
+    console.log(data);
+  }
 
   function logout(){
     localStorage.removeItem("AUTH_TOKEN")

@@ -15,7 +15,7 @@ export const useAppointmentsStore = defineStore("appointments", () => {
 
   const toast = inject("toast");
   const router = useRouter();
-  const user = useUserStore()
+  const user = useUserStore();
 
   // Genera el horario
   onMounted(() => {
@@ -67,6 +67,7 @@ export const useAppointmentsStore = defineStore("appointments", () => {
       totalAmount: totalAmount.value
     };
 
+    // So existe Id, edita
     if (appointmentId.value) {
       try {
         const { data } = await AppointmentApi.update(appointmentId.value, appointment);
@@ -77,6 +78,7 @@ export const useAppointmentsStore = defineStore("appointments", () => {
       } catch (error) {
         console.log(error);
       }
+      // Si no existe, crea
     } else {
       try {
         const { data } = await AppointmentApi.create(appointment);
@@ -89,7 +91,7 @@ export const useAppointmentsStore = defineStore("appointments", () => {
       }
     }
     clearAppointmentData();
-    user.getUserAppointments()
+    user.getUserAppointments();
     router.push({ name: "my-appointments" });
   }
   function clearAppointmentData() {
@@ -97,6 +99,25 @@ export const useAppointmentsStore = defineStore("appointments", () => {
     dateValue.value = "";
     time.value = "";
     appointmentId.value = "";
+  }
+
+  async function deleteAppointment(id) {
+    if (confirm("¿Quieres cancelar esta cita?")) {
+      try {
+        const { data } = await AppointmentApi.delete(id);
+        console.log(id);
+        toast.open({
+          message: data.msg,
+          type: "success"
+        });
+        user.userAppointments = user.userAppointments.filter(appointment => appointment._id !== id)
+      } catch (error) {
+        toast.open({
+          message: error.response.data.msg,
+          type: "error"
+        });
+      }
+    }
   }
 
   const isServiceSelected = computed(() => {
@@ -137,6 +158,7 @@ export const useAppointmentsStore = defineStore("appointments", () => {
     totalAmount,
     isValidReservation,
     isDateSelected,
-    disabledTime
+    disabledTime,
+    deleteAppointment
   };
 });

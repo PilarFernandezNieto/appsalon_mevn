@@ -1,6 +1,9 @@
 <script setup>
 import {displayDate} from "../helpers/date.js"
 import { formatCurrency } from "@/helpers/index.js";
+import { useAppointmentsStore } from "@/stores/appointments.js";
+
+const appointments = useAppointmentsStore();
 
 defineProps({
     appointment: {
@@ -26,7 +29,7 @@ defineProps({
         <div class="flex gap-2 items-center">
             <RouterLink :to="{name: 'edit-appointment', params: {id: appointment._id}}"
                 class="bg-slate-600 rounded-lg p-3 text-white text-sm uppercase font-black flex-1 md:flex-none">Editar Cita</RouterLink>
-            <button class="bg-red-600 rounded-lg p-3 text-white text-sm uppercase font-black flex-1 md:flex-none">Cancelar Cita</button>
+            <button class="bg-red-600 rounded-lg p-3 text-white text-sm uppercase font-black flex-1 md:flex-none" @click="appointments.deleteAppointment(appointment._id)">Cancelar Cita</button>
 
         </div>
      

@@ -9,7 +9,8 @@ const getUserAppointments = async (request, response) => {
         return response.status(400).json({ msg: error.message })
     }
 
-
+    // Trae las citas filtradas por fecha futura
+    // No trae las fechas a pasado
     try {
         const appointments = await Appointment.find({
             user,

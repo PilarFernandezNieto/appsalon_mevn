@@ -89,5 +89,37 @@ const updateAppointment = async (request, response) => {
   }
 }
 
+const deleteAppointment = async (request, response) => {
+  const { id } = request.params
 
-export { createAppointment, getAppointmentsByDate, getAppointmentsById, updateAppointment };
+
+  //Validar ObjectId
+  if(validateObjectId(id, response)) return
+
+  // Validar que la cita exista
+  const appointment = await Appointment.findById(id).populate("services")
+  if(!appointment){
+   return handleNotFoundError("La cita no existe", response)
+  }
+
+  if(appointment.user.toString() !== request.user.id.toString()){
+    const error = new Error("No tiene los persmisos")
+    return response.status(400).json({msg: error.message})
+  }
+  try {
+    await appointment.deleteOne()
+    response.json({msg: "Cita eliminada con éxito"})
+  } catch (error) {
+    
+  }
+  
+}
+
+
+export { 
+  createAppointment, 
+  getAppointmentsByDate, 
+  getAppointmentsById, 
+  updateAppointment,
+  deleteAppointment
+ };

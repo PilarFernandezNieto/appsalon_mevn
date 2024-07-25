@@ -101,23 +101,23 @@ export const useAppointmentsStore = defineStore("appointments", () => {
     appointmentId.value = "";
   }
 
-  async function deleteAppointment(id) {
-    if (confirm("¿Quieres cancelar esta cita?")) {
+  async function cancelAppointment(id) {
+    if(confirm('¿Deseas cancelar esta cita?')) {
       try {
-        const { data } = await AppointmentApi.delete(id);
-        console.log(id);
-        toast.open({
-          message: data.msg,
-          type: "success"
-        });
-        user.userAppointments = user.userAppointments.filter(appointment => appointment._id !== id)
+          const { data } = await AppointmentApi.delete(id)
+          toast.open({
+              message: data.msg,
+              type: 'success'
+          })
+
+          user.userAppointments = user.userAppointments.filter( appointment => appointment._id !== id)
       } catch (error) {
-        toast.open({
-          message: error.response.data.msg,
-          type: "error"
-        });
+          toast.open({
+              message: error.response.data.msg,
+              type: 'error'
+          })
       }
-    }
+  }
   }
 
   const isServiceSelected = computed(() => {
@@ -159,6 +159,6 @@ export const useAppointmentsStore = defineStore("appointments", () => {
     isValidReservation,
     isDateSelected,
     disabledTime,
-    deleteAppointment
+    cancelAppointment
   };
 });

@@ -14,6 +14,7 @@ onMounted(async () => {
     try {
         const { data } = await AppointmentApi.getById(id)
         appointments.setSelectedAppointment(data)
+      
     } catch (error) {
         router.push({name: "my-appointments"})
     }

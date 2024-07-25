@@ -1,6 +1,7 @@
 import User from "../models/User.js";
-import { sendEmailVerification } from "../emails/authEmailService.js";
-import { generateJWT } from "../utils/index.js";
+import { sendEmailVerification, sendEmaiPasswordReset } from "../emails/authEmailService.js";
+import { generateJWT, uniqueID } from "../utils/index.js";
+import { response } from "express";
 
 const register = async (request, response) => {
   // Valida que estén todos los campos
@@ -102,12 +103,76 @@ const login = async (request, response) => {
   }
 };
 
+const forgotPassword = async (request, response) => {
+  const { email } = request.body;
+
+  // comprobar que el email existe
+  const user = await User.findOne({ email });
+  if (!user) {
+    const error = new Error("El usuario no existe");
+    response.status(404).json({
+      msg: error.message
+    });
+  }
+  try {
+    user.token = uniqueID();
+    const result = await user.save();
+    await sendEmaiPasswordReset({
+      name: result.name,
+      email: result.email,
+      token: result.token
+    });
+
+    response.json({
+      msg: "Hemos enviado un email con las instrucciones"
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+const verifyPasswordResetToken = async (request, response) => {
+  const { token } = request.params;
+  const isValidToken = await User.findOne({ token });
+  if (!isValidToken) {
+    const error = new Error("Hubo un error. Token no válido");
+    return response.status(400).json({
+      msg: error.message
+    });
+    
+  }
+  response.json({
+    msg: "Token válido"
+  });
+};
+const updatePassword = async (request, response) => {
+  const { token } = request.params;
+  const user = await User.findOne({ token });
+  if (!user) {
+    const error = new Error("Hubo un error. Token no válido");
+    return response.status(400).json({
+      msg: error.message
+    });
+    
+  }
+  const {password} = request.body
+  try {
+    user.token = ""
+    user.password = password
+    await user.save()
+    response.json({
+      msg: "Password modificado correctamente"
+    })
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 const user = async (request, response) => {
-  const { user } = request
+  const { user } = request;
 
   response.json({
     user
   });
 };
 
-export { register, verifyAccount, login, user };
+export { register, verifyAccount, login, forgotPassword, verifyPasswordResetToken, updatePassword, user };

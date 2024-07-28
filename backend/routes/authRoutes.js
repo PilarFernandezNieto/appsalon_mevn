@@ -1,5 +1,5 @@
 import express from "express"
-import {register, verifyAccount, login, forgotPassword,verifyPasswordResetToken, updatePassword, user} from "../controllers/authController.js"
+import {register, verifyAccount, login, forgotPassword,verifyPasswordResetToken, updatePassword, user, admin} from "../controllers/authController.js"
 import authMiddleware from "../middleware/authMiddleware.js"
 
 
@@ -22,6 +22,7 @@ router.route("/forgot-password/:token")
 
 // Area privada - Requiere JWT
 router.get("/user", authMiddleware, user)
+router.get("/admin", authMiddleware, admin)
 
 
 

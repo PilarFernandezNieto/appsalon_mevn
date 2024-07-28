@@ -13,6 +13,7 @@ export const useUserStore = defineStore("user", () => {
   onMounted(async () => {
     try {
       const { data } = await AuthApi.auth();
+      console.log(data);
       user.value = data.user;
 
       await getUserAppointments();
